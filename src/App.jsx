@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import TodoItem from "./components/TodoItem";
+import "./App.css";
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
 
-  // Load tasks from backend when app starts
   useEffect(() => {
     fetch("http://localhost:5000/tasks")
       .then(res => res.json())
@@ -45,33 +45,37 @@ export default function App() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">To-Do List (MongoDB)</h1>
+    <div className="app-container">
+      <div className="todo-card">
+        <h1 className="todo-title">📌 My Stylish To-Do</h1>
 
-      <form onSubmit={addTask} className="flex mb-4">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Add a new task"
-          className="border p-2 flex-grow"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 ml-2">
-          Add
-        </button>
-      </form>
-
-      <ul>
-        {tasks.length === 0 && <li>No tasks yet!</li>}
-        {tasks.map((task) => (
-          <TodoItem
-            key={task._id}
-            task={task}
-            onToggle={() => toggleTask(task._id, task.completed)}
-            onDelete={() => deleteTask(task._id)}
+        <form onSubmit={addTask} className="todo-form">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Enter new task..."
+            className="todo-input"
           />
-        ))}
-      </ul>
+          <button type="submit" className="todo-add-btn">Add</button>
+        </form>
+
+        <div className="todo-list-container">
+          {tasks.length === 0 && (
+            <p className="no-tasks">No tasks yet. Add one above!</p>
+          )}
+          <ul className="todo-list">
+            {tasks.map((task) => (
+              <TodoItem
+                key={task._id}
+                task={task}
+                onToggle={() => toggleTask(task._id, task.completed)}
+                onDelete={() => deleteTask(task._id)}
+              />
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
